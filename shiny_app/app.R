@@ -62,7 +62,7 @@ server <- function(input, output) {
   output$axis_note <- renderText({
     
     axis_note <- paste0("Note: y-axis does not start at zero <br> ",
-                        "Deprivation breakdown of HLE beyond 2019-2021 expected winter 2025<br>",
+                        "Deprivation breakdown of HLE beyond 2019-2021 due winter 2025<br>",
                         "HLE time series data generated with historic methodlogy,see <br>",
                         tags$a("NRS revised methodology",
                                href = "https://osr.statisticsauthority.gov.uk/correspondence/alan-ferrier-to-ed-humpherson-temporary-suspension-of-accredited-official-statistics-status-of-national-records-scotlands-healthy-life-expectancy-statistics/", target = "_blank"))
