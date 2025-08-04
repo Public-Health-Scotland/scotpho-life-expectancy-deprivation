@@ -1,0 +1,57 @@
+###############################################.
+## ScotPHO - Life expectancy - Scotland ----
+###############################################.
+
+# Data queried directly from statistics.gov
+# install the opendata scotland r package which communicates with the statistics.gov wesbite api
+# install.packages("devtools")
+# devtools::install_github("datasciencescotland/opendatascot")
+
+library(opendatascot) # to extract from statistics.gov
+library(readr)        # to write csv
+library(dplyr)        # to get %>% operator
+# datasets <- ods_all_datasets() # to see available datasets on statistics.gov.scot
+
+# Setting file permissions to anyone to allow writing/overwriting of project files
+Sys.umask("006")
+
+# UPDATE the analyst's folder - where data should be saved for shiny app to run
+shiny_folder <- "/PHI_conf/ScotPHO/1.Analysts_space/Vicky/scotpho-life-expectancy-scot/shiny_app/data/"
+
+# UPDATE data file location
+data_folder <- "/PHI_conf/ScotPHO/Website/Topics/Life expectancy/202507_update/"
+
+
+# parameters used to filter the opendata
+simd <- c("All")
+simd<- c("All"           ,     "1 - most deprived" , "2"         ,         "3"        ,          "4"           ,       "5 - least deprived")
+simd<-c("1")
+urban_rural <- c("all")
+age_select <- "0-years"
+
+
+###############################################.
+# Life expectancy data
+###############################################.
+
+ods_structure("Life-Expectancy") # see structure and variables of this dataset
+
+# date range for LE
+date_range_le <- c("2001-2003", "2002-2004", "2003-2005", "2004-2006", "2005-2007",
+                   "2006-2008", "2007-2009", "2008-2010", "2009-2011", "2010-2012",
+                   "2011-2013", "2012-2014", "2013-2015", "2014-2016", "2015-2017", 
+                   "2016-2018", "2017-2019", "2018-2020", "2019-2021", "2020-2022", "2021-2023") # add most recent year
+
+# extract data
+le = ods_dataset("Life-Expectancy", refPeriod = date_range_le, geography = "sc",
+                 urbanRuralClassification = urban_rural,
+                 simdQuintiles = simd, measureType = "count")
+%>%
+  setNames(tolower(names(.))) %>%
+  rename("year" = refperiod) %>% 
+  filter(age == age_select) %>% 
+  mutate(measure = "Life expectancy",
+         sex = case_when(sex == "male" ~ "Male",
+                         sex == "female" ~ "Female")) %>% 
+  select(c("year", "measure", "sex", "value","simdquintiles")) %>% 
+  arrange(sex, year)
