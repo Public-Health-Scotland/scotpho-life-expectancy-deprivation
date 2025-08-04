@@ -1,3 +1,5 @@
+# Archived script for use when data not available through open data platform.
+
 library(readr)        # to write csv
 library(dplyr)        # to get %>% operator
 
